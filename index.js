@@ -1,23 +1,30 @@
-document.addEventListener('DOMContentLoaded', async () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    const gameId = urlParams.get('id');
+<script src="https://js.puter.com/v2/"></script>
 
-    if (gameId) {
-        const url = 'https://polytoria.com/api/places/join';
-        const payload = { placeID: parseInt(gameId) };
-        try {
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            const result = await response.json();
-            console.log('Join Success:', result);
-        } catch (error) {
-            console.error('Join failed:', error);
+<script>
+    (async () => {
+        await puter.ready();
+        const params = new URLSearchParams(window.location.search);
+        const gameId = params.get('id');
+        
+        if (!gameId) {
+            console.error("No Game ID found in URL.");
+            return;
         }
-    } else {
-        console.error("no id found");
-    }
-});
+        try {
+            const response = await puter.net.fetch('https://polytoria.com/api/places/join', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    placeID: parseInt(gameId)
+                })
+            });
+
+            const result = await response.json();
+            console.log('Join successful:', result);            
+        } catch (error) {
+            console.error('CORS-free request failed:', error);
+        }
+    })();
+</script>
